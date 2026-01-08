@@ -3,61 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Task Manager</title>
+    <title>Task Manager | GS + GitHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .loading-overlay { display: none; background: rgba(255,255,255,0.7); }
+        .is-loading .loading-overlay { display: flex; }
+    </style>
 </head>
-<body class="bg-gray-100 p-4 md:p-8">
+<body class="bg-gray-50 min-h-screen pb-12">
 
-    <div class="max-w-4xl mx-auto">
-        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2">➕ Tambah Task Baru</h2>
-            <form id="taskForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="taskName" placeholder="Nama Task" class="border p-2 rounded w-full" required>
-                <select id="category" class="border p-2 rounded w-full"></select>
-                <select id="priority" class="border p-2 rounded w-full"></select>
-                <select id="status" class="border p-2 rounded w-full"></select>
-                <button type="submit" id="subBtn" class="md:col-span-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Simpan Task</button>
-            </form>
+    <nav class="bg-blue-700 text-white shadow-lg mb-8">
+        <div class="max-w-5xl mx-auto px-4 py-4">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <span>📋</span> Task Manager
+            </h1>
+        </div>
+    </nav>
+
+    <div class="max-w-5xl mx-auto px-4">
+        
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold mb-4 text-gray-800">Tambah Tugasan Baru</h2>
+                <form id="taskForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nama Task</label>
+                        <input type="text" id="taskName" placeholder="Masukkan tugasan..." class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Kategori</label>
+                        <select id="category" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Priority</label>
+                        <select id="priority" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+                    <div class="md:col-span-1">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Status Awal</label>
+                        <select id="status" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+                    <div class="md:col-span-4 flex justify-end">
+                        <button type="submit" id="subBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">
+                            Simpan Task
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2">📋 Senarai Tugasan</h2>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-800">Senarai Tugasan</h2>
+                <button onclick="loadData()" class="text-blue-600 text-sm font-medium hover:underline text-gray-500 italic">Refresh Data</button>
+            </div>
+            
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50 text-gray-600 uppercase text-sm">
-                            <th class="p-3 border">Task</th>
-                            <th class="p-3 border">Kategori</th>
-                            <th class="p-3 border">Priority</th>
-                            <th class="p-3 border">Status</th>
-                            <th class="p-3 border">Tindakan</th>
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-gray-600 text-xs uppercase font-bold">
+                        <tr>
+                            <th class="px-6 py-4">Tugasan</th>
+                            <th class="px-6 py-4">Kategori</th>
+                            <th class="px-6 py-4">Priority</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="taskTableBody">
-                        </tbody>
+                    <tbody id="taskTableBody" class="divide-y divide-gray-100 text-gray-700">
+                        <tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">Memuatkan data...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 
     <script>
+        // GANTIKAN DENGAN URL APPS SCRIPT ANDA
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx-Dks9_z1Wq5dB3aOxPMLzC4wWQsGPpAwzl-4EZRlcDOHBfE1IUYoQtlBZqom1qRT0/exec";
 
-        // Load data on startup
         window.onload = loadData;
 
+        // 1. Fungsi Tarik Data
         function loadData() {
             fetch(WEB_APP_URL)
                 .then(res => res.json())
                 .then(data => {
-                    // Isi Dropdown
+                    // Populate Dropdowns
                     fillDropdown('category', data.categories);
                     fillDropdown('status', data.statuses);
                     fillDropdown('priority', data.priorities);
                     
-                    // Isi Table
+                    // Render Jadual
                     renderTable(data.tasks, data.statuses);
-                });
+                })
+                .catch(err => console.error("Error load data:", err));
         }
 
         function fillDropdown(id, items) {
@@ -67,57 +107,4 @@
 
         function renderTable(tasks, allStatuses) {
             const tbody = document.getElementById('taskTableBody');
-            tbody.innerHTML = tasks.map(t => `
-                <tr class="hover:bg-gray-50 border-b">
-                    <td class="p-3 font-medium">${t.name}</td>
-                    <td class="p-3"><span class="bg-gray-200 px-2 py-1 rounded text-xs">${t.category}</span></td>
-                    <td class="p-3">${t.priority}</td>
-                    <td class="p-3">
-                        <select onchange="updateStatus(${t.row}, this.value)" class="text-sm border rounded p-1">
-                            ${allStatuses.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td class="p-3">
-                        <span class="${t.status === 'COMPLETED' ? 'text-green-500' : 'text-orange-500'} text-xs font-bold">
-                            ${t.status}
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Fungsi UPDATE status
-        function updateStatus(rowId, newStatus) {
-            fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ row: rowId, status: newStatus })
-            }).then(() => alert("Status Dikemaskini!"));
-        }
-
-        // Fungsi SUBMIT task baru
-        document.getElementById('taskForm').onsubmit = function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('subBtn');
-            btn.disabled = true;
-            btn.innerText = "Menyimpan...";
-
-            const payload = {
-                taskName: document.getElementById('taskName').value,
-                category: document.getElementById('category').value,
-                status: document.getElementById('status').value,
-                priority: document.getElementById('priority').value
-            };
-
-            fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(payload)
-            }).then(() => {
-                alert("Berjaya!");
-                location.reload();
-            });
-        };
-    </script>
-</body>
-</html>
+            if (tasks.length
