@@ -8,7 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: fixed linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .glass { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="min-h-screen pb-12">
@@ -21,29 +21,29 @@
 
     <div class="max-w-xl mx-auto px-4 space-y-6">
         
-        <div class="glass rounded-3xl shadow-2xl p-6 border border-white/20 text-gray-800">
-            <h2 class="text-lg font-extrabold mb-5 flex items-center gap-2">
+        <div class="glass rounded-3xl shadow-2xl p-6 border border-white/20">
+            <h2 class="text-lg font-extrabold mb-5 flex items-center gap-2 text-gray-800">
                 <span class="w-2 h-6 bg-blue-600 rounded-full"></span> Tugasan Baru
             </h2>
             
             <form id="taskForm" class="space-y-4">
                 <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1 text-white">Nama Tugasan</label>
-                    <textarea id="taskName" rows="2" placeholder="Masukkan nama tugasan..." class="w-full border border-gray-200 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm bg-white" required></textarea>
+                    <label class="block text-[11px] font-black text-slate-700 uppercase mb-1 tracking-widest ml-1">Nama Tugasan</label>
+                    <textarea id="taskName" rows="2" placeholder="Masukkan nama tugasan..." class="w-full border border-gray-300 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm bg-white text-gray-800 font-medium" required></textarea>
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
                     <div>
-                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest text-center text-white">Kategori</label>
-                        <select id="category" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none"></select>
+                        <label class="block text-[10px] font-black text-slate-700 uppercase mb-1 tracking-widest text-center">Kategori</label>
+                        <select id="category" class="w-full border border-gray-300 rounded-xl p-2 text-xs font-bold bg-white text-gray-800 outline-none"></select>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest text-center text-white">Priority</label>
-                        <select id="priority" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none"></select>
+                        <label class="block text-[10px] font-black text-slate-700 uppercase mb-1 tracking-widest text-center">Priority</label>
+                        <select id="priority" class="w-full border border-gray-300 rounded-xl p-2 text-xs font-bold bg-white text-gray-800 outline-none"></select>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest text-center text-white">Status</label>
-                        <select id="status" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none"></select>
+                        <label class="block text-[10px] font-black text-slate-700 uppercase mb-1 tracking-widest text-center">Status</label>
+                        <select id="status" class="w-full border border-gray-300 rounded-xl p-2 text-xs font-bold bg-white text-gray-800 outline-none"></select>
                     </div>
                 </div>
 
@@ -90,13 +90,11 @@
                 container.innerHTML = data.tasks.map(t => {
                     if (!t.name) return '';
                     
-                    // Priority Style
                     let pColor = "bg-gray-200 text-gray-600";
                     if (t.priority === 'High') pColor = "bg-red-500 text-white shadow-sm";
                     if (t.priority === 'Medium') pColor = "bg-yellow-400 text-gray-900 shadow-sm";
                     if (t.priority === 'Low') pColor = "bg-green-500 text-white shadow-sm";
 
-                    // Status Style
                     let sColor = "text-orange-500 font-black";
                     if (t.status === 'COMPLETED') sColor = "text-green-600 font-black";
 
@@ -109,11 +107,10 @@
 
                         <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
                             <span class="bg-blue-600 text-white text-[8px] px-2 py-1 rounded font-black uppercase whitespace-nowrap">${t.category}</span>
-                            
                             <span class="${pColor} text-[8px] px-2 py-1 rounded font-black uppercase whitespace-nowrap">${t.priority}</span>
                             
                             <div class="flex-grow">
-                                <select onchange="updateStatus(${t.row}, this.value)" class="text-[9px] border-none bg-transparent rounded-lg p-0 font-black uppercase outline-none ${sColor} cursor-pointer w-full">
+                                <select onchange="updateStatus(${t.row}, this.value)" class="text-[10px] border-none bg-transparent rounded-lg p-0 font-black uppercase outline-none ${sColor} cursor-pointer w-full">
                                     ${data.statuses.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
                                 </select>
                             </div>
@@ -128,7 +125,7 @@
                 }).join('');
 
             } catch (e) {
-                document.getElementById('taskCardContainer').innerHTML = `<div class="glass p-8 rounded-3xl text-center text-red-500 font-bold">Ralat sambungan.</div>`;
+                document.getElementById('taskCardContainer').innerHTML = `<div class="glass p-8 rounded-3xl text-center text-red-500 font-bold italic underline">RALAT: Gagal tarik data.</div>`;
             }
         }
 
@@ -159,7 +156,7 @@
         }
 
         async function clearRow(rowId) {
-            if (confirm("Kosongkan data baris ini?")) {
+            if (confirm("Padam data pada baris ini?")) {
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ row: rowId, action: "delete" }) });
                 loadData();
             }
