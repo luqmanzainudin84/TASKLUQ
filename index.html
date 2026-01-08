@@ -6,76 +6,65 @@
     <title>Smart Task Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: fixed linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="min-h-screen pb-12">
 
-    <div class="max-w-6xl mx-auto px-4 pt-10 pb-6 text-white">
-        <h1 class="text-3xl font-bold flex items-center gap-3">
-            <span class="bg-white/20 p-2 rounded-lg text-2xl">📝</span> Task System
+    <div class="max-w-xl mx-auto px-4 pt-10 pb-6 text-white text-center">
+        <h1 class="text-3xl font-extrabold flex justify-center items-center gap-3">
+            <span class="bg-white/20 p-2 rounded-xl text-2xl shadow-inner">📝</span> Task System
         </h1>
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 space-y-6">
+    <div class="max-w-xl mx-auto px-4 space-y-6">
         
-        <div class="glass rounded-2xl shadow-2xl p-6 border border-white/20 text-gray-800">
-            <h2 class="text-lg font-bold mb-5 flex items-center gap-2">
+        <div class="glass rounded-3xl shadow-2xl p-6 border border-white/20 text-gray-800">
+            <h2 class="text-lg font-extrabold mb-5 flex items-center gap-2">
                 <span class="w-2 h-6 bg-blue-600 rounded-full"></span> Tugasan Baru
             </h2>
             
             <form id="taskForm" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1 tracking-widest">Nama Tugasan</label>
-                    <input type="text" id="taskName" placeholder="Contoh: Submit Report MOS..." class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1">Nama Tugasan</label>
+                    <textarea id="taskName" rows="2" placeholder="Masukkan nama tugasan..." class="w-full border border-gray-200 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm bg-white" required></textarea>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1 tracking-widest">Kategori</label>
-                        <select id="category" class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 bg-white"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1 tracking-widest">Priority</label>
-                        <select id="priority" class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 bg-white"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1 tracking-widest">Status</label>
-                        <select id="status" class="w-full border border-gray-300 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 bg-white"></select>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1 text-center">Kategori</label>
+                            <select id="category" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none focus:ring-2 focus:ring-blue-500"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1 text-center">Priority</label>
+                            <select id="priority" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none focus:ring-2 focus:ring-blue-500"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1 text-center">Status</label>
+                            <select id="status" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none focus:ring-2 focus:ring-blue-500"></select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex justify-end pt-2">
-                    <button type="submit" id="subBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-10 py-3 rounded-xl shadow-lg transition-transform active:scale-95">
-                        Simpan Task
+                <div class="pt-2">
+                    <button type="submit" id="subBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-xl transition transform active:scale-95 text-sm uppercase tracking-widest">
+                        Simpan Tugasan
                     </button>
                 </div>
             </form>
         </div>
 
-        <div class="glass rounded-2xl shadow-2xl overflow-hidden border border-white/20">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white/50">
-                <h2 class="text-lg font-bold text-gray-800 tracking-tight">Senarai Tugasan</h2>
-                <button onclick="loadData()" class="text-blue-600 text-xs font-bold py-2 px-4 rounded-lg bg-blue-50 hover:bg-blue-100 transition">🔄 REFRESH</button>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center px-2">
+                <h2 class="text-white font-black text-lg uppercase tracking-tight">Senarai Tugasan</h2>
+                <button onclick="loadData()" class="bg-white/20 hover:bg-white/30 text-white text-[10px] font-black py-2 px-4 rounded-full border border-white/30 transition uppercase">🔄 REFRESH</button>
             </div>
             
-            <div class="overflow-x-auto px-4 pb-4">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="text-gray-400 text-[10px] uppercase font-black tracking-tighter">
-                            <th class="py-4 px-2">Tugasan</th>
-                            <th class="py-4 px-2">Kategori</th>
-                            <th class="py-4 px-2 text-center">Priority</th>
-                            <th class="py-4 px-2">Status</th>
-                            <th class="py-4 px-2 text-right">Hapus</th>
-                        </tr>
-                    </thead>
-                    <tbody id="taskTableBody" class="divide-y divide-gray-100 text-gray-700">
-                        <tr><td colspan="5" class="py-10 text-center text-gray-400 animate-pulse font-bold">Memuatkan data dari Google Sheets...</td></tr>
-                    </tbody>
-                </table>
+            <div id="taskCardContainer" class="space-y-4">
+                <div class="glass p-8 rounded-3xl text-center text-gray-400 italic font-bold">Memuatkan data...</div>
             </div>
         </div>
     </div>
@@ -85,61 +74,64 @@
 
         window.onload = loadData;
 
-        // FUNGSI UTAMA: Tarik Data
         async function loadData() {
             try {
                 const response = await fetch(WEB_APP_URL);
                 const data = await response.json();
 
-                // Isi Dropdowns
                 fillDropdown('category', data.categories);
                 fillDropdown('status', data.statuses);
                 fillDropdown('priority', data.priorities);
                 
-                // Render Table
-                const tbody = document.getElementById('taskTableBody');
+                const container = document.getElementById('taskCardContainer');
                 if (!data.tasks || data.tasks.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-gray-400">Tiada tugasan.</td></tr>`;
+                    container.innerHTML = `<div class="glass p-8 rounded-3xl text-center text-gray-400 font-bold italic">Tiada tugasan ditemui.</div>`;
                     return;
                 }
 
-                tbody.innerHTML = data.tasks.map(t => {
+                container.innerHTML = data.tasks.map(t => {
                     if (!t.name) return '';
                     
-                    // Logic Warna Priority
+                    // Priority Badge Style
                     let pColor = "bg-gray-100 text-gray-600";
-                    if (t.priority === 'High') pColor = "bg-red-500 text-white";
-                    if (t.priority === 'Medium') pColor = "bg-yellow-400 text-gray-900";
-                    if (t.priority === 'Low') pColor = "bg-green-500 text-white";
+                    if (t.priority === 'High') pColor = "bg-red-500 text-white shadow-red-200 shadow-lg";
+                    if (t.priority === 'Medium') pColor = "bg-yellow-400 text-gray-900 shadow-yellow-100 shadow-lg";
+                    if (t.priority === 'Low') pColor = "bg-green-500 text-white shadow-green-200 shadow-lg";
 
-                    // Logic Warna Status
-                    let sColor = "text-gray-500 font-bold";
-                    if (t.status === 'PENDING') sColor = "text-orange-500 font-black italic uppercase";
-                    if (t.status === 'COMPLETED') sColor = "text-green-600 font-black uppercase";
+                    // Status Text Style
+                    let sColor = "text-orange-500";
+                    if (t.status === 'COMPLETED') sColor = "text-green-600";
 
                     return `
-                    <tr class="hover:bg-blue-50/50 transition duration-150">
-                        <td class="py-4 px-2 font-bold text-gray-800">${t.name}</td>
-                        <td class="py-4 px-2"><span class="bg-blue-600 text-white text-[9px] px-2 py-1 rounded font-black uppercase">${t.category}</span></td>
-                        <td class="py-4 px-2 text-center"><span class="${pColor} text-[9px] px-3 py-1 rounded-full font-black uppercase shadow-sm">${t.priority}</span></td>
-                        <td class="py-4 px-2">
-                            <select onchange="updateStatus(${t.row}, this.value)" class="text-[11px] border rounded-lg p-1 font-bold outline-none ${sColor}">
-                                ${data.statuses.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
-                            </select>
-                        </td>
-                        <td class="py-4 px-2 text-right">
-                            <button onclick="clearRow(${t.row})" class="text-red-500 hover:scale-125 transition inline-block">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>`;
+                    <div id="card-${t.row}" class="glass rounded-3xl p-5 shadow-xl border border-white/50 relative overflow-hidden group">
+                        <div class="mb-4 pr-10">
+                            <h3 class="text-base font-extrabold text-gray-800 leading-tight">${t.name}</h3>
+                            <p class="text-[9px] text-gray-400 mt-1 font-bold italic uppercase tracking-widest">${t.date}</p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-blue-600 text-white text-[9px] px-2 py-1 rounded-md font-black uppercase tracking-tighter">${t.category}</span>
+                                <span class="${pColor} text-[9px] px-2 py-1 rounded-md font-black uppercase tracking-tighter">${t.priority}</span>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <select onchange="updateStatus(${t.row}, this.value)" class="text-[10px] border-none bg-gray-50 rounded-lg p-1 font-black uppercase outline-none ${sColor} cursor-pointer">
+                                    ${data.statuses.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
+                                </select>
+                                
+                                <button onclick="clearRow(${t.row})" class="text-red-500 p-2 hover:bg-red-50 rounded-full transition active:scale-90">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
                 }).join('');
 
             } catch (e) {
-                console.error(e);
-                document.getElementById('taskTableBody').innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-500 font-bold italic underline">RALAT: Gagal sambung ke Google. Check URL Apps Script!</td></tr>`;
+                document.getElementById('taskCardContainer').innerHTML = `<div class="glass p-8 rounded-3xl text-center text-red-500 font-bold italic underline">RALAT: Check URL Apps Script!</div>`;
             }
         }
 
@@ -148,23 +140,20 @@
             if (el && items) el.innerHTML = items.map(i => `<option value="${i}">${i}</option>`).join('');
         }
 
-        // Hantar Task Baru
         document.getElementById('taskForm').onsubmit = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('subBtn');
-            btn.innerText = "Saving..."; btn.disabled = true;
-
+            btn.innerText = "MENYIMPAN..."; btn.disabled = true;
             const payload = {
                 taskName: document.getElementById('taskName').value,
                 category: document.getElementById('category').value,
                 status: document.getElementById('status').value,
                 priority: document.getElementById('priority').value
             };
-
             await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
             document.getElementById('taskForm').reset();
             loadData();
-            btn.innerText = "Simpan Task"; btn.disabled = false;
+            btn.innerText = "SIMPAN TUGASAN"; btn.disabled = false;
         };
 
         async function updateStatus(rowId, newStatus) {
@@ -173,7 +162,7 @@
         }
 
         async function clearRow(rowId) {
-            if (confirm("Kosongkan baris ini?")) {
+            if (confirm("Kosongkan data pada baris ini?")) {
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ row: rowId, action: "delete" }) });
                 loadData();
             }
