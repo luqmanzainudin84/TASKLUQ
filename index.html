@@ -13,9 +13,9 @@
 </head>
 <body class="min-h-screen pb-12">
 
-    <div class="max-w-xl mx-auto px-4 pt-10 pb-6 text-white text-center">
+    <div class="max-w-xl mx-auto px-4 pt-10 pb-4 text-white text-center">
         <h1 class="text-3xl font-extrabold flex justify-center items-center gap-3">
-            <span class="bg-white/20 p-2 rounded-xl text-2xl shadow-inner">📝</span> Task System
+            <span class="bg-white/20 p-2 rounded-xl text-2xl shadow-inner text-white">📝</span> Task System
         </h1>
     </div>
 
@@ -28,30 +28,28 @@
             
             <form id="taskForm" class="space-y-4">
                 <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1">Nama Tugasan</label>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1 text-white">Nama Tugasan</label>
                     <textarea id="taskName" rows="2" placeholder="Masukkan nama tugasan..." class="w-full border border-gray-200 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm bg-white" required></textarea>
                 </div>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="grid grid-cols-3 gap-2">
-                        <div>
-                            <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1 text-center">Kategori</label>
-                            <select id="category" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none focus:ring-2 focus:ring-blue-500"></select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1 text-center">Priority</label>
-                            <select id="priority" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none focus:ring-2 focus:ring-blue-500"></select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest ml-1 text-center">Status</label>
-                            <select id="status" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none focus:ring-2 focus:ring-blue-500"></select>
-                        </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest text-center text-white">Kategori</label>
+                        <select id="category" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest text-center text-white">Priority</label>
+                        <select id="priority" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest text-center text-white">Status</label>
+                        <select id="status" class="w-full border border-gray-200 rounded-xl p-2 text-xs font-bold bg-white outline-none"></select>
                     </div>
                 </div>
 
                 <div class="pt-2">
                     <button type="submit" id="subBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-xl transition transform active:scale-95 text-sm uppercase tracking-widest">
-                        Simpan Tugasan
+                        SIMPAN TUGASAN
                     </button>
                 </div>
             </form>
@@ -63,7 +61,7 @@
                 <button onclick="loadData()" class="bg-white/20 hover:bg-white/30 text-white text-[10px] font-black py-2 px-4 rounded-full border border-white/30 transition uppercase">🔄 REFRESH</button>
             </div>
             
-            <div id="taskCardContainer" class="space-y-4">
+            <div id="taskCardContainer" class="space-y-3">
                 <div class="glass p-8 rounded-3xl text-center text-gray-400 italic font-bold">Memuatkan data...</div>
             </div>
         </div>
@@ -92,46 +90,45 @@
                 container.innerHTML = data.tasks.map(t => {
                     if (!t.name) return '';
                     
-                    // Priority Badge Style
-                    let pColor = "bg-gray-100 text-gray-600";
-                    if (t.priority === 'High') pColor = "bg-red-500 text-white shadow-red-200 shadow-lg";
-                    if (t.priority === 'Medium') pColor = "bg-yellow-400 text-gray-900 shadow-yellow-100 shadow-lg";
-                    if (t.priority === 'Low') pColor = "bg-green-500 text-white shadow-green-200 shadow-lg";
+                    // Priority Style
+                    let pColor = "bg-gray-200 text-gray-600";
+                    if (t.priority === 'High') pColor = "bg-red-500 text-white shadow-sm";
+                    if (t.priority === 'Medium') pColor = "bg-yellow-400 text-gray-900 shadow-sm";
+                    if (t.priority === 'Low') pColor = "bg-green-500 text-white shadow-sm";
 
-                    // Status Text Style
-                    let sColor = "text-orange-500";
-                    if (t.status === 'COMPLETED') sColor = "text-green-600";
+                    // Status Style
+                    let sColor = "text-orange-500 font-black";
+                    if (t.status === 'COMPLETED') sColor = "text-green-600 font-black";
 
                     return `
-                    <div id="card-${t.row}" class="glass rounded-3xl p-5 shadow-xl border border-white/50 relative overflow-hidden group">
-                        <div class="mb-4 pr-10">
-                            <h3 class="text-base font-extrabold text-gray-800 leading-tight">${t.name}</h3>
-                            <p class="text-[9px] text-gray-400 mt-1 font-bold italic uppercase tracking-widest">${t.date}</p>
+                    <div id="card-${t.row}" class="glass rounded-3xl p-5 shadow-lg border border-white/40">
+                        <div class="mb-3">
+                            <h3 class="text-[15px] font-extrabold text-gray-800 leading-snug">${t.name}</h3>
+                            <p class="text-[9px] text-gray-400 font-bold italic uppercase tracking-wider mt-0.5">${t.date}</p>
                         </div>
 
-                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100">
-                            <div class="flex items-center gap-2">
-                                <span class="bg-blue-600 text-white text-[9px] px-2 py-1 rounded-md font-black uppercase tracking-tighter">${t.category}</span>
-                                <span class="${pColor} text-[9px] px-2 py-1 rounded-md font-black uppercase tracking-tighter">${t.priority}</span>
-                            </div>
-
-                            <div class="flex items-center gap-4">
-                                <select onchange="updateStatus(${t.row}, this.value)" class="text-[10px] border-none bg-gray-50 rounded-lg p-1 font-black uppercase outline-none ${sColor} cursor-pointer">
+                        <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
+                            <span class="bg-blue-600 text-white text-[8px] px-2 py-1 rounded font-black uppercase whitespace-nowrap">${t.category}</span>
+                            
+                            <span class="${pColor} text-[8px] px-2 py-1 rounded font-black uppercase whitespace-nowrap">${t.priority}</span>
+                            
+                            <div class="flex-grow">
+                                <select onchange="updateStatus(${t.row}, this.value)" class="text-[9px] border-none bg-transparent rounded-lg p-0 font-black uppercase outline-none ${sColor} cursor-pointer w-full">
                                     ${data.statuses.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
                                 </select>
-                                
-                                <button onclick="clearRow(${t.row})" class="text-red-500 p-2 hover:bg-red-50 rounded-full transition active:scale-90">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
                             </div>
+
+                            <button onclick="clearRow(${t.row})" class="text-red-500 p-1 hover:bg-red-50 rounded-lg transition shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
                         </div>
                     </div>`;
                 }).join('');
 
             } catch (e) {
-                document.getElementById('taskCardContainer').innerHTML = `<div class="glass p-8 rounded-3xl text-center text-red-500 font-bold italic underline">RALAT: Check URL Apps Script!</div>`;
+                document.getElementById('taskCardContainer').innerHTML = `<div class="glass p-8 rounded-3xl text-center text-red-500 font-bold">Ralat sambungan.</div>`;
             }
         }
 
@@ -162,7 +159,7 @@
         }
 
         async function clearRow(rowId) {
-            if (confirm("Kosongkan data pada baris ini?")) {
+            if (confirm("Kosongkan data baris ini?")) {
                 await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ row: rowId, action: "delete" }) });
                 loadData();
             }
