@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - GS & GitHub</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        :root { --spacing: 1rem; }
+        body { padding: 20px; max-width: 800px; margin: auto; }
+        .loading { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <article>
+            <header>
+                <strong>📝 Daftar Task Baru</strong>
+            </header>
+            
+            <form id="taskForm">
+                <label for="taskName">Nama Tugasan</label>
+                <input type="text" id="taskName" placeholder="Contoh: Siapkan laporan tapak..." required>
+
+                <div class="grid">
+                    <div>
+                        <label for="category">Kategori</label>
+                        <select id="category" required>
+                            <option value="" disabled selected>Loading kategori...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="priority">Priority</label>
+                        <select id="priority" required>
+                            <option value="" disabled selected>Loading...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label for="status">Status</label>
+                <select id="status" required>
+                    <option value="" disabled selected>Loading...</option>
+                </select>
+
+                <button type="submit" id="submitBtn">Simpan Task ke Google Sheets</button>
+            </form>
+        </article>
+    </main>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx-Dks9_z1Wq5dB3aOxPMLzC4wWQsGPpAwzl-4EZRlcDOHBfE1IUYoQtlBZqom1qRT0/exec";
+
+        // 1. Ambil list dropdown secara automatik dari Sheets bila page dibuka
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch(WEB_APP_URL)
+                .then(res => res.json())
+                .then(data => {
+                    setupDropdown('category', data.categories);
+                    setupDropdown('status', data.statuses);
+                    setupDropdown('priority', data.priorities);
+                })
+                .catch(err => alert("Gagal tarik data: " + err));
+        });
+
+        function setupDropdown(id, items) {
+            let select = document.getElementById(id);
+            select.innerHTML = ""; // Kosongkan loading text
+            items.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item;
+                opt.innerHTML = item;
+                select.appendChild(opt);
+            });
+        }
+
+        // 2. Hantar data ke Google Sheets
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.ariaBusy = "true";
+            btn.innerText = "Menghantar...";
+
+            const payload = {
+                taskName: document.getElementById('taskName').value,
+                category: document.getElementById('category').value,
+                status: document.getElementById('status').value,
+                priority: document.getElementById('priority').value
+            };
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Penting untuk Apps Script doPost
+                cache: 'no-cache',
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                alert("Berjaya! Task telah dimasukkan dalam Google Sheets.");
+                document.getElementById('taskForm').reset();
+            })
+            .catch(err => alert("Ralat: " + err))
+            .finally(() => {
+                btn.ariaBusy = "false";
+                btn.innerText = "Simpan Task ke Google Sheets";
+            });
+        });
+    </script>
+</body>
+</html>
