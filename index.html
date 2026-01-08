@@ -3,84 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager - GS & GitHub</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <style>
-        :root { --spacing: 1rem; }
-        body { padding: 20px; max-width: 800px; margin: auto; }
-        .loading { opacity: 0.5; pointer-events: none; }
-    </style>
+    <title>My Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 p-4 md:p-8">
 
-    <main class="container">
-        <article>
-            <header>
-                <strong>📝 Daftar Task Baru</strong>
-            </header>
-            
-            <form id="taskForm">
-                <label for="taskName">Nama Tugasan</label>
-                <input type="text" id="taskName" placeholder="Contoh: Siapkan laporan tapak..." required>
-
-                <div class="grid">
-                    <div>
-                        <label for="category">Kategori</label>
-                        <select id="category" required>
-                            <option value="" disabled selected>Loading kategori...</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="priority">Priority</label>
-                        <select id="priority" required>
-                            <option value="" disabled selected>Loading...</option>
-                        </select>
-                    </div>
-                </div>
-
-                <label for="status">Status</label>
-                <select id="status" required>
-                    <option value="" disabled selected>Loading...</option>
-                </select>
-
-                <button type="submit" id="submitBtn">Simpan Task ke Google Sheets</button>
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-bold mb-4 border-b pb-2">➕ Tambah Task Baru</h2>
+            <form id="taskForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="taskName" placeholder="Nama Task" class="border p-2 rounded w-full" required>
+                <select id="category" class="border p-2 rounded w-full"></select>
+                <select id="priority" class="border p-2 rounded w-full"></select>
+                <select id="status" class="border p-2 rounded w-full"></select>
+                <button type="submit" id="subBtn" class="md:col-span-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Simpan Task</button>
             </form>
-        </article>
-    </main>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-bold mb-4 border-b pb-2">📋 Senarai Tugasan</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 uppercase text-sm">
+                            <th class="p-3 border">Task</th>
+                            <th class="p-3 border">Kategori</th>
+                            <th class="p-3 border">Priority</th>
+                            <th class="p-3 border">Status</th>
+                            <th class="p-3 border">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx-Dks9_z1Wq5dB3aOxPMLzC4wWQsGPpAwzl-4EZRlcDOHBfE1IUYoQtlBZqom1qRT0/exec";
+        const WEB_APP_URL = "URL_APPS_SCRIPT_ANDA_DI_SINI";
 
-        // 1. Ambil list dropdown secara automatik dari Sheets bila page dibuka
-        document.addEventListener('DOMContentLoaded', function() {
+        // Load data on startup
+        window.onload = loadData;
+
+        function loadData() {
             fetch(WEB_APP_URL)
                 .then(res => res.json())
                 .then(data => {
-                    setupDropdown('category', data.categories);
-                    setupDropdown('status', data.statuses);
-                    setupDropdown('priority', data.priorities);
-                })
-                .catch(err => alert("Gagal tarik data: " + err));
-        });
-
-        function setupDropdown(id, items) {
-            let select = document.getElementById(id);
-            select.innerHTML = ""; // Kosongkan loading text
-            items.forEach(item => {
-                let opt = document.createElement('option');
-                opt.value = item;
-                opt.innerHTML = item;
-                select.appendChild(opt);
-            });
+                    // Isi Dropdown
+                    fillDropdown('category', data.categories);
+                    fillDropdown('status', data.statuses);
+                    fillDropdown('priority', data.priorities);
+                    
+                    // Isi Table
+                    renderTable(data.tasks, data.statuses);
+                });
         }
 
-        // 2. Hantar data ke Google Sheets
-        document.getElementById('taskForm').addEventListener('submit', function(e) {
+        function fillDropdown(id, items) {
+            const el = document.getElementById(id);
+            el.innerHTML = items.map(i => `<option value="${i}">${i}</option>`).join('');
+        }
+
+        function renderTable(tasks, allStatuses) {
+            const tbody = document.getElementById('taskTableBody');
+            tbody.innerHTML = tasks.map(t => `
+                <tr class="hover:bg-gray-50 border-b">
+                    <td class="p-3 font-medium">${t.name}</td>
+                    <td class="p-3"><span class="bg-gray-200 px-2 py-1 rounded text-xs">${t.category}</span></td>
+                    <td class="p-3">${t.priority}</td>
+                    <td class="p-3">
+                        <select onchange="updateStatus(${t.row}, this.value)" class="text-sm border rounded p-1">
+                            ${allStatuses.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td class="p-3">
+                        <span class="${t.status === 'COMPLETED' ? 'text-green-500' : 'text-orange-500'} text-xs font-bold">
+                            ${t.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Fungsi UPDATE status
+        function updateStatus(rowId, newStatus) {
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ row: rowId, status: newStatus })
+            }).then(() => alert("Status Dikemaskini!"));
+        }
+
+        // Fungsi SUBMIT task baru
+        document.getElementById('taskForm').onsubmit = function(e) {
             e.preventDefault();
-            
-            const btn = document.getElementById('submitBtn');
-            btn.ariaBusy = "true";
-            btn.innerText = "Menghantar...";
+            const btn = document.getElementById('subBtn');
+            btn.disabled = true;
+            btn.innerText = "Menyimpan...";
 
             const payload = {
                 taskName: document.getElementById('taskName').value,
@@ -91,20 +111,13 @@
 
             fetch(WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Penting untuk Apps Script doPost
-                cache: 'no-cache',
+                mode: 'no-cors',
                 body: JSON.stringify(payload)
-            })
-            .then(() => {
-                alert("Berjaya! Task telah dimasukkan dalam Google Sheets.");
-                document.getElementById('taskForm').reset();
-            })
-            .catch(err => alert("Ralat: " + err))
-            .finally(() => {
-                btn.ariaBusy = "false";
-                btn.innerText = "Simpan Task ke Google Sheets";
+            }).then(() => {
+                alert("Berjaya!");
+                location.reload();
             });
-        });
+        };
     </script>
 </body>
 </html>
