@@ -3,174 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager | GS + GitHub</title>
+    <title>Smart Task Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen pb-12">
+<body class="gradient-bg min-h-screen pb-12">
 
-    <nav class="bg-blue-700 text-white shadow-lg mb-8">
-        <div class="max-w-5xl mx-auto px-4 py-4">
-            <h1 class="text-2xl font-bold flex items-center gap-2">📋 Task Manager</h1>
-        </div>
-    </nav>
-
-    <div class="max-w-5xl mx-auto px-4">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-            <h2 class="text-lg font-semibold mb-4 text-gray-800">Tambah Tugasan Baru</h2>
-            <form id="taskForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nama Task</label>
-                    <input type="text" id="taskName" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Kategori</label>
-                    <select id="category" class="w-full border border-gray-300 rounded-lg p-2.5"></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Priority</label>
-                    <select id="priority" class="w-full border border-gray-300 rounded-lg p-2.5"></select>
-                </div>
-                <div class="md:col-span-1">
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Status Awal</label>
-                    <select id="status" class="w-full border border-gray-300 rounded-lg p-2.5"></select>
-                </div>
-                <div class="md:col-span-4 flex justify-end">
-                    <button type="submit" id="subBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition">Simpan Task</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h2 class="text-lg font-semibold text-gray-800">Senarai Tugasan</h2>
-                <button onclick="loadData()" class="text-blue-600 text-sm hover:underline">Refresh Data</button>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-gray-600 text-xs uppercase font-bold">
-                        <tr>
-                            <th class="px-6 py-4 border-b">Tugasan</th>
-                            <th class="px-6 py-4 border-b">Kategori</th>
-                            <th class="px-6 py-4 border-b">Priority</th>
-                            <th class="px-6 py-4 border-b">Status</th>
-                            <th class="px-6 py-4 border-b text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="taskTableBody" class="divide-y divide-gray-100 text-gray-700">
-                        <tr><td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">Memuatkan data...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="max-w-6xl mx-auto px-4 pt-10 pb-6 text-white">
+        <h1 class="text-3xl font-bold flex items-center gap-3">
+            <span class="bg-white/20 p-2 rounded-lg text-2xl">📝</span> 
+            Task Management System
+        </h1>
+        <p class="text-white/70 mt-2">Uruskan tugas BPT, ROM, MOS & BKB dengan lebih sistematik.</p>
     </div>
 
-    <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx-Dks9_z1Wq5dB3aOxPMLzC4wWQsGPpAwzl-4EZRlcDOHBfE1IUYoQtlBZqom1qRT0/exec";
-
-        window.onload = loadData;
-
-        async function loadData() {
-            try {
-                // Gunakan cara fetch yang lebih selamat untuk Google Apps Script
-                const response = await fetch(WEB_APP_URL);
-                const data = await response.json();
-
-                // Isi Dropdowns
-                fillDropdown('category', data.categories);
-                fillDropdown('status', data.statuses);
-                fillDropdown('priority', data.priorities);
-                
-                // Isi Jadual
-                const tbody = document.getElementById('taskTableBody');
-                if (!data.tasks || data.tasks.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">Tiada tugasan ditemui.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = data.tasks.map(t => {
-                    if (!t.name) return ''; // Abaikan baris kosong
-                    return `
-                    <tr id="row-${t.row}" class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 font-medium text-gray-900">${t.name}</td>
-                        <td class="px-6 py-4"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">${t.category}</span></td>
-                        <td class="px-6 py-4 text-sm">${t.priority}</td>
-                        <td class="px-6 py-4">
-                            <select onchange="updateStatus(${t.row}, this.value)" class="text-sm border border-gray-300 rounded p-1 shadow-sm">
-                                ${data.statuses.map(s => `<option value="${s}" ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
-                            </select>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="clearRow(${t.row})" class="text-red-400 hover:text-red-600 transition" title="Delete">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>`;
-                }).join('');
-            } catch (err) {
-                document.getElementById('taskTableBody').innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-red-500 font-bold">Ralat: Gagal memuatkan data. Sila pastikan Apps Script dideploy sebagai 'Anyone'.</td></tr>`;
-                console.error(err);
-            }
-        }
-
-        function fillDropdown(id, items) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.innerHTML = items.map(i => `<option value="${i}">${i}</option>`).join('');
-        }
-
-        document.getElementById('taskForm').onsubmit = async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('subBtn');
-            btn.disabled = true;
-            btn.innerText = "Menyimpan...";
-
-            const payload = {
-                taskName: document.getElementById('taskName').value,
-                category: document.getElementById('category').value,
-                status: document.getElementById('status').value,
-                priority: document.getElementById('priority').value
-            };
-
-            await fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors', // Penting untuk hantar data ke Apps Script
-                body: JSON.stringify(payload)
-            });
-
-            document.getElementById('taskForm').reset();
-            loadData();
-            btn.disabled = false;
-            btn.innerText = "Simpan Task";
-        };
-
-        async function updateStatus(rowId, newStatus) {
-            const row = document.getElementById(`row-${rowId}`);
-            row.style.opacity = "0.4";
-            await fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ row: rowId, status: newStatus })
-            });
-            row.style.opacity = "1";
-        }
-
-        async function clearRow(rowId) {
-            if (!confirm("Padam data pada baris ini?")) return;
-            const row = document.getElementById(`row-${rowId}`);
-            row.style.opacity = "0.4";
-            await fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ row: rowId, action: "delete" })
-            });
-            loadData();
-        }
-    </script>
-</body>
-</html>
+    <div class="max-w-6xl mx-auto px-4 space-y-8">
+        
+        <div class="glass rounded-2xl shadow-2xl p-6 border border-white/20">
+            <h2 class="text-lg font-bold text-gray-800 mb-5 flex items-center gap-2">
+                <span class="w-2 h-6 bg-blue-600 rounded-full"></span> 
+                Tugasan Baru
+            </h2>
+            <form id="taskForm" class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-1">Nama Tugasan</label>
+                    <input type="text" id="taskName" placeholder="Contoh: Submit Report MOS..." class="w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 transition" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-1">Kategori</label>
+                    <select id="category" class="w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500
